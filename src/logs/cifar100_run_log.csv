@@ -1,0 +1,1 @@
+epoch,train_loss,train_acc,float_eval_acc,float_trainmode_acc,discrete_acc,BATCH_SIZE,GATE_OPTIMIZER,NETWORK_LR,GUMBEL_TAU,GROUP_SUM_TAU,NETWORK_LAYERS,GATES,EPOCHS
