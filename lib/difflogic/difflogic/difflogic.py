@@ -27,7 +27,8 @@ class LogicLayer(torch.nn.Module):
             hard_connections: bool = False,
             num_connections: int = 16,
             noise_temp: float = 0.1,
-            entmax_alpha: float = 1.5
+            entmax_alpha: float = 1.5,
+            residual: bool = False
     ):
         """
         :param in_dim: input dimensionality of the layer
@@ -44,7 +45,12 @@ class LogicLayer(torch.nn.Module):
         :param noise_temp: temperature for Gaussian noise (for sparsemax_noise)
         """
         super().__init__()
-        self.weights = torch.nn.parameter.Parameter(torch.randn(out_dim, 16, device=device))
+        if not residual:
+            self.weights = torch.nn.parameter.Parameter(torch.randn(out_dim, 16, device=device))
+        else:
+            tens = torch.full((out_dim,16),0.1/15,device=device)
+            tens[:,3] = 0.9
+            self.weights = torch.nn.Parameter(tens)
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.device = device
@@ -57,6 +63,7 @@ class LogicLayer(torch.nn.Module):
         self.noise_temp = noise_temp
         self.entmax_alpha = entmax_alpha
         self.implementation = implementation
+        self.residual = residual
         if self.implementation is None and device == 'cuda':
             self.implementation = 'cuda'
         elif self.implementation is None and device == 'cpu':
